@@ -1,0 +1,5 @@
+- Pulled the mlops_sp24_acc9 from hammadmajeed
+- Changed the model locally on our machines, did that for every branch
+- Used DVC repro command; which ran all the files
+- Every branch pushed the code to their own branches on github
+- Github action using dvc diff 
