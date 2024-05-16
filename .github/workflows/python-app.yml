@@ -11,6 +11,9 @@ jobs:
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v2
+        with:
+          # Fetch all branches so we can check them out later
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -20,21 +23,17 @@ jobs:
       - name: Install DVC
         run: pip install dvc
 
-      - name: Checkout main branch
-        run: git checkout main
+      - name: Checkout and pull data for main branch
+        run: |
+          git checkout main
+          dvc pull
         id: main
 
-      - name: Pull DVC data for main
-        run: dvc pull
-        id: main-data
-
-      - name: Checkout branch i200503
-        run: git checkout i200503
+      - name: Checkout and pull data for branch i200503
+        run: |
+          git checkout i200503
+          dvc pull
         id: i200503
-
-      - name: Pull DVC data for i200503
-        run: dvc pull
-        id: i200503-data
 
       - name: DVC Diff between main and i200503
         run: |
@@ -45,13 +44,11 @@ jobs:
           dvc diff main i200503
         id: diff1
 
-      - name: Checkout branch i200707
-        run: git checkout i200707
+      - name: Checkout and pull data for branch i200707
+        run: |
+          git checkout i200707
+          dvc pull
         id: i200707
-
-      - name: Pull DVC data for i200707
-        run: dvc pull
-        id: i200707-data
 
       - name: DVC Diff between i200503 and i200707
         run: |
@@ -71,13 +68,11 @@ jobs:
           dvc diff main i200707
         id: diff3
 
-      - name: Checkout branch i200822
-        run: git checkout i200822
+      - name: Checkout and pull data for branch i200822
+        run: |
+          git checkout i200822
+          dvc pull
         id: i200822
-
-      - name: Pull DVC data for i200822
-        run: dvc pull
-        id: i200822-data
 
       - name: DVC Diff between i200707 and i200822
         run: |
