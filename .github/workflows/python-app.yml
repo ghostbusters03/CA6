@@ -1,8 +1,8 @@
 name: DVC Diff
-
 on:
   push:
-    branches: [ main ]  # Run the workflow when there is a push to the main branch
+    branches:
+      - main  # Run the workflow when there is a push to the main branch
 
 jobs:
   dvc-diff:
@@ -12,8 +12,11 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v2
         with:
-          # Fetch all branches so we can check them out later
-          fetch-depth: 0
+          fetch-depth: 0  # Fetch all branches so we can check them out later
+
+      - name: List directory contents for debugging
+        run: ls -la
+        id: list-repo
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -23,35 +26,35 @@ jobs:
       - name: Install DVC
         run: pip install dvc
 
-      - name: Checkout and pull data for all branches
+      - name: Checkout and pull data for branch i200503
         run: |
-          git checkout main
-          dvc pull
-
           git checkout i200503
           dvc pull
+        id: i200503
 
+      - name: DVC Diff between i200503 and i200707
+        run: |
+          git checkout i200503
+          dvc pull
           git checkout i200707
           dvc pull
+          dvc diff i200503 i200707
+        id: diff1
 
+      - name: DVC Diff between i200503 and i200822
+        run: |
+          git checkout i200503
+          dvc pull
           git checkout i200822
           dvc pull
-        id: checkout_and_pull
-
-      - name: DVC Diff between main and other branches
-        run: |
-          git checkout main
-          dvc diff main i200503
-          dvc diff main i200707
-          dvc diff main i200822
-        id: diff_main
-
-      - name: DVC Diff between feature branches
-        run: |
-          git checkout i200503
-          dvc diff i200503 i200707
           dvc diff i200503 i200822
+        id: diff2
 
+      - name: DVC Diff between i200707 and i200822
+        run: |
           git checkout i200707
+          dvc pull
+          git checkout i200822
+          dvc pull
           dvc diff i200707 i200822
-        id: diff_features
+        id: diff3
