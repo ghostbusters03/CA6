@@ -1,8 +1,8 @@
 name: DVC Diff
+
 on:
   push:
-    branches:
-      - main  # Run the workflow when there is a push to the main branch
+    branches: [ main ]  # Run the workflow when there is a push to the main branch
 
 jobs:
   dvc-diff:
@@ -23,80 +23,35 @@ jobs:
       - name: Install DVC
         run: pip install dvc
 
-      - name: Checkout and pull data for main branch
+      - name: Checkout and pull data for all branches
         run: |
           git checkout main
           dvc pull
-        id: main
 
-      - name: Checkout and pull data for branch i200503
-        run: |
           git checkout i200503
           dvc pull
-        id: i200503
 
-      - name: DVC Diff between main and i200503
+          git checkout i200707
+          dvc pull
+
+          git checkout i200822
+          dvc pull
+        id: checkout_and_pull
+
+      - name: DVC Diff between main and other branches
         run: |
           git checkout main
-          dvc pull
-          git checkout i200503
-          dvc pull
           dvc diff main i200503
-        id: diff1
-
-      - name: Checkout and pull data for branch i200707
-        run: |
-          git checkout i200707
-          dvc pull
-        id: i200707
-
-      - name: DVC Diff between i200503 and i200707
-        run: |
-          git checkout i200503
-          dvc pull
-          git checkout i200707
-          dvc pull
-          dvc diff i200503 i200707
-        id: diff2
-
-      - name: DVC Diff between main and i200707
-        run: |
-          git checkout main
-          dvc pull
-          git checkout i200707
-          dvc pull
           dvc diff main i200707
-        id: diff3
+          dvc diff main i200822
+        id: diff_main
 
-      - name: Checkout and pull data for branch i200822
-        run: |
-          git checkout i200822
-          dvc pull
-        id: i200822
-
-      - name: DVC Diff between i200707 and i200822
-        run: |
-          git checkout i200707
-          dvc pull
-          git checkout i200822
-          dvc pull
-          dvc diff i200707 i200822
-        id: diff4
-
-      - name: DVC Diff between i200503 and i200822
+      - name: DVC Diff between feature branches
         run: |
           git checkout i200503
-          dvc pull
-          git checkout i200822
-          dvc pull
+          dvc diff i200503 i200707
           dvc diff i200503 i200822
-        id: diff5
 
-      - name: DVC Diff between main and i200822
-        run: |
-          git checkout main
-          dvc pull
-          git checkout i200822
-          dvc pull
-          dvc diff main i200822
-        id: diff6
+          git checkout i200707
+          dvc diff i200707 i200822
+        id: diff_features
