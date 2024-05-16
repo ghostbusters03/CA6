@@ -26,35 +26,50 @@ jobs:
       - name: Install DVC
         run: pip install dvc
 
-      - name: Checkout and pull data for branch i200503
+      - name: Checkout and confirm .dvc directory for branch i200503
         run: |
           git checkout i200503
-          dvc pull
+          if [ ! -d ".dvc" ]; then
+            echo "ERROR: .dvc directory does not exist in branch i200503. Please ensure the DVC repository is initialized."
+            exit 1
+          fi
         id: i200503
+
+      - name: Checkout and confirm .dvc directory for branch i200707
+        run: |
+          git checkout i200707
+          if [ ! -d ".dvc" ]; then
+            echo "ERROR: .dvc directory does not exist in branch i200707. Please ensure the DVC repository is initialized."
+            exit 1
+          fi
+        id: i200707
+
+      - name: Checkout and confirm .dvc directory for branch i200822
+        run: |
+          git checkout i200822
+          if [ ! -d ".dvc" ]; then
+            echo "ERROR: .dvc directory does not exist in branch i200822. Please ensure the DVC repository is initialized."
+            exit 1
+          fi
+        id: i200822
 
       - name: DVC Diff between i200503 and i200707
         run: |
           git checkout i200503
-          dvc pull
           git checkout i200707
-          dvc pull
           dvc diff i200503 i200707
         id: diff1
 
       - name: DVC Diff between i200503 and i200822
         run: |
           git checkout i200503
-          dvc pull
           git checkout i200822
-          dvc pull
           dvc diff i200503 i200822
         id: diff2
 
       - name: DVC Diff between i200707 and i200822
         run: |
           git checkout i200707
-          dvc pull
           git checkout i200822
-          dvc pull
           dvc diff i200707 i200822
         id: diff3
